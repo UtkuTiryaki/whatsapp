@@ -1,9 +1,28 @@
-<div class="container">
- <div class="chats">
-  <app-home></app-home>
-  <app-chats></app-chats>
- </div>
- <div class="chat">
-  <app-chat></app-chat>
+<div class="container d-flex align-items-center justify-content-center" style="height: 100vh;">
+ <div class="col-12 col-md-6">
+  <div class="row justify-content-center">
+   <form [formGroup]="authForm" (ngSubmit)="onSubmit()" class="form">
+    <h2 style="font-size: 24px; color: #333; font-weight: bold; margin-bottom: 20px;">{{ isLoginMode ? 'Anmeldung' : 'Registrierung' }}</h2>
+    <div class="form-group">
+     <label for="email">E-Mail</label>
+     <input type="email" id="email" formControlName="email" class="form-control">
+    </div>
+    <div class="form-group">
+     <label for="password">Passwort</label>
+     <input type="password" id="password" formControlName="password" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-primary" style="margin-right: 10px;"> {{ isLoginMode ? 'Anmelden' : 'Registrieren' }}</button>
+    <button type="button" class="btn btn-secondary" (click)="toggleMode()">{{ isLoginMode ? 'Registrieren' : 'Anmelden' }}</button>
+    <hr>
+    <div class="row">
+     <div class="col-xs-12 col-md-6 offset-md-3">
+      <div class="alert alert-danger" *ngIf="error">
+       <p> {{ error }}</p>
+      </div>
+     </div>
+    </div>
+   </form>
+  </div>
  </div>
 </div>
+<router-outlet></router-outlet>
