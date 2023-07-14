@@ -1,0 +1,19 @@
+<div class="container">
+ <div class="heading-section">
+  <p>Hier steht der Name</p>
+ </div>
+ <div class="chat-section">
+  <div *ngFor="let messageItem of chat">
+    <div class="message sender">
+     {{messageItem.message}}
+     <div class="metadata">{{messageItem.timestamp}}</div>
+    </div>
+  </div>
+ </div>
+ <div class="input-section">
+  <input type="text" class="custom-input" placeholder="Schreib eine Narchicht" [(ngModel)]="message">
+  <button class="input-button" 
+          *ngIf="message !== '' " 
+          (click)="sendMessage()">Senden</button>
+ </div>
+</div>
