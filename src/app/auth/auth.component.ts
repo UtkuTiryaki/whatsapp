@@ -21,7 +21,8 @@ export class AuthComponent {
   constructor(private authService: AuthService, private router: Router){
       this.authForm = new FormGroup({
       'email' : new FormControl(null, [Validators.required, Validators.email]),
-      'password' : new FormControl(null, [Validators.required, Validators.minLength(6)])
+      'password' : new FormControl(null, [Validators.required, Validators.minLength(6)]),
+      'name' : new FormControl(null)
     })
     this.userSub = this.authService.user.subscribe(user=> {
       this.isAuthenticated = !!user;
@@ -36,11 +37,12 @@ export class AuthComponent {
     if (this.authForm.valid) {
       const email = this.authForm.get('email')?.value;
       const password = this.authForm.get('password')?.value;
+      const name = this.authForm.get('name')?.value;
 
       let authObs: Observable<AuthResponseData>;
 
       if (this.isLoginMode) {
-        authObs= this.authService.signUp(email, password);
+        authObs= this.authService.signUp(email, password, name);
       } else {
         authObs= this.authService.login(email, password)
       }

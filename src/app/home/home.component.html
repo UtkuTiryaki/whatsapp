@@ -1,12 +1,38 @@
 <div class="container">
  <div class="chats">
-  <div class="logout">
-     <div class="profil-picture">
+   <div class="user-bar">
       <p>Profilbild</p>
-     </div>
-     <button class="logout-btn" (click)="logout()">Abmelden</button>
+      <p>Name</p>
+      <button (click)="openFormModal()" class="btn btn-primary">Neuer Kontakt</button>
+      <div class="modal" [class.show]="isFormModalOpen">
+         <div class="modal-dialog">
+            <div class="modal-content">
+               <!-- Modal Header -->
+               <div class="modal-header">
+                  <h5 class="modal-title">Neuer Kontakt</h5>
+                  <button type="button" class="close" (click)="closeFormModal()">
+                     <span>&times;</span>
+                  </button>
+               </div>
+               <div class="modal-body">
+                  <form [formGroup]="newContactForm">
+                     <label for="email">E-Mail</label>
+                     <input type="email" id="email" formControlName="email" class="form-control">
+                  </form>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" (click)="newContact()">Speichern</button>
+                  <button type="button" class="btn btn-secondary" (click)="closeFormModal()">Abbrechen</button>
+               </div>
+            </div>
+         </div>
+      </div>
+      <button>Neuer Chat</button>
   </div>
   <app-chats></app-chats>
+   <div class="logout">
+      <button class="logout-btn" (click)="logout()">Abmelden</button>
+   </div>
  </div>
  <div class="chat">
   <app-chat></app-chat>

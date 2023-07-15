@@ -21,7 +21,7 @@ import { AuthInterceptorService } from './auth/auth-interceptor.service';
     ChatsComponent,
     ChatComponent,
     HomeComponent,
-    AuthComponent
+    AuthComponent,
   ],
   imports: [
     BrowserModule,
@@ -29,7 +29,7 @@ import { AuthInterceptorService } from './auth/auth-interceptor.service';
     HttpClientModule,
     ReactiveFormsModule,
     RouterModule,
-    AppRoutingModule
+    AppRoutingModule,
   ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi:true}],
   bootstrap: [AppComponent]

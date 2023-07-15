@@ -1,82 +1,23 @@
-.button-container{
- display: flex;
-}
-
-.create-button{
- padding: 10px 20px;
- background-color: lightblue;
- color: white;
- border: none;
- border-radius: 4px;
- margin-right: 10px;
-}
-
-.button.hover{
- background-color: darkblue;
- cursor: pointer;
-}
-
-.form {
- margin: 20px;
-}
-
-.form-group {
- margin-bottom: 15px;
-}
-
-label {
- display: block;
- font-weight: bold;
-}
-
-input[type="text"] {
- width: 100%;
- padding: 8px;
- border: 1px solid #ccc;
- border-radius: 4px;
-}
-
-.btn {
- padding: 8px 16px;
- border-radius: 4px;
- cursor: pointer;
-}
-
-.btn-primary {
- background-color: #007bff;
- color: #fff;
- border: none;
-}
-
-.btn-secondary {
- background-color: #6c757d;
- color: #fff;
- border: none;
-}
-
-.body {
- margin: 0;
- padding: 0;
- font-family: Arial, sans-serif;
-}
-
 .container {
  display: flex;
  justify-content: space-between;
+ align-items: flex-start;
+ margin-top: 30px;
+ overflow: hidden;
+ margin-bottom: 20px;
  height: 100vh;
 }
 
 .chats {
- width: 30%;
- background-color: #f8f9fa;
- padding: 20px;
+ flex: 1;
+ margin-right: 20px;
+ background-color: salmon;
 }
 
 .chat {
- width: 70%;
- background-color: #ffffff;
- padding: 20px;
- box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+ flex: 1;
+ margin-left: 20px;
+ background-color: antiquewhite;
 }
 
 .logout {
@@ -84,13 +25,13 @@ input[type="text"] {
  align-items: center;
 }
 
-.profile-picture {
+.user-bar {
  display: flex;
  align-items: center;
  margin-right: 10px;
 }
 
-.profile-picture p {
+.user-bar p {
  margin-right: 10px;
 }
 
@@ -103,3 +44,6 @@ input[type="text"] {
  border: none;
 }
 
+.user-bar button {
+ margin-right: 10px;
+}
