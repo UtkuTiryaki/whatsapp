@@ -1,5 +1,5 @@
 import { Component , OnInit, OnDestroy} from '@angular/core';
-import { ChatService } from '../chat.service';
+import { ChatService } from './chat.service';
 import { Post } from '../post.model';
 import { Subscription, map } from 'rxjs';
 

@@ -10,7 +10,8 @@ import { AppComponent } from './app.component';
 import { ChatsComponent } from './chats/chats.component';
 import { ChatComponent } from './chat/chat.component';
 import { HomeComponent } from './home/home.component';
-import { AuthInterceptorService } from './auth-interceptor.service';
+import { AuthComponent } from './auth/auth.component';
+import { AuthInterceptorService } from './auth/auth-interceptor.service';
 
 
 
@@ -20,6 +21,7 @@ import { AuthInterceptorService } from './auth-interceptor.service';
     ChatsComponent,
     ChatComponent,
     HomeComponent,
+    AuthComponent
   ],
   imports: [
     BrowserModule,

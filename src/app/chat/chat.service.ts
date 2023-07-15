@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Post } from "./post.model";
+import { Post } from "../post.model";
 import { Subject, exhaustMap, map , take} from "rxjs";
-import { AuthService } from "./auth.service";
+import { AuthService } from "../auth/auth.service";
 
 @Injectable({providedIn: 'root'})
 

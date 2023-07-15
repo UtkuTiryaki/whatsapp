@@ -1,0 +1,21 @@
+<form [formGroup]="authForm" (ngSubmit)="onSubmit()" class="form" *ngIf="!isAuthenticated">
+ <h2 style="font-size: 24px; color: #333; font-weight: bold; margin-bottom: 20px;">{{ isLoginMode ? 'Registrieren' :'Anmeldung' }}</h2>
+ <div class="form-group">
+  <label for="email">E-Mail</label>
+  <input type="email" id="email" formControlName="email" class="form-control">
+ </div>
+ <div class="form-group">
+  <label for="password">Passwort</label>
+  <input type="password" id="password" formControlName="password" class="form-control">
+ </div>
+ <button type="submit" class="btn btn-primary" style="margin-right: 10px;"> {{ isLoginMode ? 'Registrieren' : 'Anmelden'}}</button>
+ <button type="button" class="btn btn-secondary" (click)="toggleMode()"> {{ isLoginMode ? 'Anmelden' : 'Registrieren'}} </button>
+ <hr>
+ <div class="row">
+  <div class="col-xs-12 col-md-6 offset-md-3">
+   <div class="alert alert-danger" *ngIf="error">
+    <p> {{ error }} </p>
+   </div>
+  </div>
+ </div>
+</form>

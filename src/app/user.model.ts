@@ -10,7 +10,7 @@ export class User {
   }
   return this._token;
  }
- 
+
  //name: string;
  //chats: Chat[];
  //contacts: User[]
