@@ -1,7 +1,8 @@
 import { Injectable } from "@angular/core";
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Post } from "./post.model";
-import { Subject, map } from "rxjs";
+import { Subject, exhaustMap, map , take} from "rxjs";
+import { AuthService } from "./auth.service";
 
 @Injectable({providedIn: 'root'})
 
@@ -10,7 +11,7 @@ export class ChatService {
  private newMessageSubject = new Subject<void>();
  public newMessageEvent = this.newMessageSubject.asObservable();
 
- constructor(private http: HttpClient){}
+ constructor(private http: HttpClient, private authService: AuthService){}
 
  sendingMessage(message: string){
   const timestamp = new Date().toISOString();
@@ -25,15 +26,20 @@ export class ChatService {
  }
 
  fetchMessage(){
-  return this.http.get<{[key:string]: Post}>('https://whatsapp-project-90961-default-rtdb.firebaseio.com/messages.json').pipe(map(responseData =>{
+  return this.http.get<{[key:string]: Post}>('https://whatsapp-project-90961-default-rtdb.firebaseio.com/messages.json').pipe(
+    map(responseData =>{
    const chat: Post []= [];
    for(const key in responseData){
     if(responseData.hasOwnProperty(key)){
      chat.push({ ...responseData[key], id: key});
     }
-   }
-   return chat;
-  }))
+    }
+    return chat;
+   })
+   );
+  }
+
+  
  }
 
-}
+

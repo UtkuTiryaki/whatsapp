@@ -1,4 +1,4 @@
-<div class="button-container">
+<!-- <div class="button-container">
  <button class="create-button" (click)="openFormModal()">Neuer Kontakt</button>
  <div class="modal" [class.show]="isFormModalOpen">
   <div class="modal-dialog">
@@ -23,4 +23,19 @@
   </div>
  </div>
  <button class="create-button">Neuer Chat</button>
+</div>-->
+
+<div class="container">
+ <div class="chats">
+  <div class="logout">
+     <div class="profil-picture">
+      <p>Profilbild</p>
+     </div>
+     <button class="logout-btn" (click)="logout()">Abmelden</button>
+  </div>
+  <app-chats></app-chats>
+ </div>
+ <div class="chat">
+  <app-chat></app-chat>
+ </div>
 </div>

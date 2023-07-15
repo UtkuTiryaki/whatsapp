@@ -53,3 +53,53 @@ input[type="text"] {
  color: #fff;
  border: none;
 }
+
+.body {
+ margin: 0;
+ padding: 0;
+ font-family: Arial, sans-serif;
+}
+
+.container {
+ display: flex;
+ justify-content: space-between;
+ height: 100vh;
+}
+
+.chats {
+ width: 30%;
+ background-color: #f8f9fa;
+ padding: 20px;
+}
+
+.chat {
+ width: 70%;
+ background-color: #ffffff;
+ padding: 20px;
+ box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.logout {
+ display: flex;
+ align-items: center;
+}
+
+.profile-picture {
+ display: flex;
+ align-items: center;
+ margin-right: 10px;
+}
+
+.profile-picture p {
+ margin-right: 10px;
+}
+
+.logout-btn {
+ padding: 8px 16px;
+ border-radius: 4px;
+ cursor: pointer;
+ background-color: #007bff;
+ color: #fff;
+ border: none;
+}
+
