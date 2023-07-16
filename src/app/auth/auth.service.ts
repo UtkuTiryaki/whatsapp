@@ -1,9 +1,9 @@
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, Subject, catchError, tap, throwError } from "rxjs";
-import { Applicant } from "../applicant.model";
+import { User } from "../user.model";
 import { Router } from "@angular/router";
-import { Contact } from "../contact.model";
+import { UserData } from "../userdata.model";
 
 export interface AuthResponseData{
  idToken: string;
@@ -17,22 +17,23 @@ export interface AuthResponseData{
 @Injectable({providedIn: 'root'})
 export class AuthService{
 
-user= new BehaviorSubject<Applicant|null>(null);
+user= new BehaviorSubject<User|null>(null);
+userData= new BehaviorSubject<UserData|null>(null);
+
 private tokenExpirationTimer : any;
 
  constructor( private http: HttpClient, private router: Router ){}
 
- signUp(email: string, password: string, name: string) : Observable<AuthResponseData>{
+signUp(email: string, password: string, name: string) : Observable<AuthResponseData>{
   return this.http.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCcBISAJbMj_6zLF5uTnmJx5jsX4NOV3tA', {
    email: email,
    password: password,
    returnSecureToken: true
   }).pipe(catchError(this.handleError), tap(resData=> {
     this.handleAuthentication(resData.email, resData.localId, resData.idToken, +resData.expiresIn);
-    const newUser: Contact = {
-      id: resData.localId,
+    const newUser: UserData = {
+      uid: resData.localId,
       email: resData.email,
-      chat : [],
       name: name
     };
     this.addUser(newUser).subscribe(()=> {
@@ -77,7 +78,7 @@ private tokenExpirationTimer : any;
   } else{
     return;
   }
-  const loadedUser = new Applicant(userData.email, userData.id, userData._token, new Date(userData._tokenExpirationDate),'');
+  const loadedUser = new User(userData.email, userData.id, userData._token, new Date(userData._tokenExpirationDate),'');
   if(loadedUser.token){
     this.user.next(loadedUser);
     const expirationDuration = new Date(userData._tokenExpirationDate).getTime() - new Date().getTime();
@@ -90,6 +91,28 @@ private tokenExpirationTimer : any;
     this.logout();
   }, expirationDuration);
  }
+
+ getCurrentUser(){
+  const userDataString = localStorage.getItem('userData');
+  let userData: {
+    email: string;
+    id: string;
+    _token: string;
+    _tokenExpirationDate: string;
+    name: string;
+  }
+  if(userDataString){
+    userData = JSON.parse(userDataString);
+  } else{
+    return;
+  }
+  const loadedUser : UserData = {
+    uid: userData.id,
+    email: userData.email,
+    name: userData.name
+  }
+  return loadedUser;
+  }
 
  private handleError(errorRes: HttpErrorResponse){
   let errorMessage = 'An unknown error occurred';
@@ -114,14 +137,14 @@ private tokenExpirationTimer : any;
 
  private handleAuthentication(email: string, userId: string, token: string, expiresIn: number){
   const expirationDate = new Date(new Date().getTime() + expiresIn * 1000);
-  const user = new Applicant(email, userId, token, expirationDate, '');
+  const user = new User(email, userId, token, expirationDate, '');
   this.user.next(user);
   this.autoLogout(expiresIn* 1000);
   localStorage.setItem('userData', JSON.stringify(user));
  }
 
- private addUser(user: Contact): Observable<any>{
+  private addUser(user: UserData): Observable<any>{
   return this.http.post('https://whatsapp-project-90961-default-rtdb.firebaseio.com/users.json', user);
  }
-
 }
+

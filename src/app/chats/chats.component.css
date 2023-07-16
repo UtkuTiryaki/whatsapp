@@ -1,0 +1,38 @@
+.chat-list {
+ width: 100%;
+ display: flex;
+ flex-direction: column;
+ gap: 10px;
+}
+
+.chat {
+ display: flex;
+ border: 1px solid #ccc;
+ padding: 10px;
+ border-radius: 10px;
+}
+
+.chat-participants {
+ flex: 1;
+}
+
+.participant-uid {
+ background-color: #f0f0f0;
+ padding: 5px;
+ margin: 5px;
+ border-radius: 5px;
+}
+
+.last-message {
+ flex: 2;
+ display: flex;
+ flex-direction: column;
+}
+
+.sender-uid {
+ font-weight: bold;
+}
+
+.content {
+ margin-top: 5px;
+}

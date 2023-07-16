@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { ChatsService } from '../chats/chats.service';
 
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -13,7 +14,7 @@ export class HomeComponent {
   isAuthenticated = false;
   isFormModalOpen = false;
   newContactForm: FormGroup = new FormGroup({
-    email: new FormControl('')
+  email: new FormControl('')
   });
 
   constructor(private formBuilder: FormBuilder, private authService: AuthService, private chatsService: ChatsService) {
@@ -37,10 +38,9 @@ export class HomeComponent {
   newContact() {
     if (this.newContactForm.valid) {
       const email = this.newContactForm.value.email;
-      this.chatsService.searchContact(email).subscribe( contact=> {
-        console.log(contact);
+      this.chatsService.searchAndAddContact(email);
         this.closeFormModal();
-      })
+      }
     }
   }
-}
+

@@ -6,18 +6,24 @@
  overflow: hidden;
  margin-bottom: 20px;
  height: 100vh;
+ background-color: #f0f0f0;
 }
 
 .chats {
+ width: 50%;
  flex: 1;
- margin-right: 20px;
- background-color: salmon;
+ padding: 10px;
+ background-color: #fff;
+ border-radius: 5px;
+ box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .chat {
  flex: 1;
- margin-left: 20px;
- background-color: antiquewhite;
+ padding: 10px;
+ background-color: #fff;
+ border-radius: 5px;
+ box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .logout {
@@ -46,4 +52,49 @@
 
 .user-bar button {
  margin-right: 10px;
+}
+
+.chats .user-bar {
+ background-color: #4caf50;
+ color: #fff;
+ padding: 10px;
+ border-radius: 5px 5px 0 0;
+}
+
+.chats .user-bar p {
+ margin: 0;
+}
+
+.chat .user-bar {
+ background-color: #2196f3;
+ color: #fff;
+ padding: 10px;
+ border-radius: 5px 5px 0 0;
+}
+
+.chat .user-bar p {
+ margin: 0;
+}
+
+/* WhatsApp-Styling für den Modal-Header */
+.modal-header {
+ background-color: #007bff;
+ color: #fff;
+ padding: 10px;
+ border-radius: 5px 5px 0 0;
+}
+
+.modal-title {
+ margin: 0;
+}
+
+/* WhatsApp-Styling für die Modal-Buttons */
+.modal-footer {
+ background-color: #f0f0f0;
+ padding: 10px;
+ border-radius: 0 0 5px 5px;
+}
+
+.modal-footer button {
+ margin-right: 5px;
 }

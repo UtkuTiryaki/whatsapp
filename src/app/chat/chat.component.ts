@@ -1,6 +1,6 @@
 import { Component , OnInit, OnDestroy} from '@angular/core';
 import { ChatService } from './chat.service';
-import { Post } from '../post.model';
+import { Message } from '../message.model';
 import { Subscription, map } from 'rxjs';
 
 @Component({
@@ -11,17 +11,18 @@ import { Subscription, map } from 'rxjs';
 export class ChatComponent implements OnInit{
   
   message : string = "";
-  chat: Post[] = [];
+  chat: Message[] = [];
 
   constructor( private chatServive: ChatService){}
 
   ngOnInit(){
-  this.fetchMessage();
+  /*this.fetchMessage();
   this.chatServive.newMessageEvent.subscribe(()=>{
     this.fetchMessage();
-  })
+  })*/
  }
 
+ /*
   sendMessage(){
     this.chatServive.sendingMessage(this.message);
     this.message = "";
@@ -56,5 +57,6 @@ export class ChatComponent implements OnInit{
 
     return `${day}/${month}/${year}, ${hour}:${minute}`;
   }
+  */
   
 }
