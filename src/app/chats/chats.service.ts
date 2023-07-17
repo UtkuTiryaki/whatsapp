@@ -1,9 +1,10 @@
-import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable, Subject, concatAll, map } from "rxjs";
+import { Observable, Subject, map, catchError, of, switchMap } from "rxjs";
 import { UserData } from "../userdata.model";
 import { Chat } from "../chat.model";
 import { AuthService } from "../auth/auth.service";
+import { ChatData } from '../chatdata.model';
 
 
 
@@ -68,19 +69,76 @@ export class ChatsService{
   })
  }
 
- fetchChat(){
-  return this.http.get<{[key:string]: Chat}>('https://whatsapp-project-90961-default-rtdb.firebaseio.com/chats.json').pipe(
+ fetchChat(): Observable<Chat[]>{
+      return this.http.get<{[key:string]: Chat}>('https://whatsapp-project-90961-default-rtdb.firebaseio.com/chats.json').pipe(
     map(responseData =>{
    const chatList: Chat []= [];
    for(const key in responseData){
-    if(responseData.hasOwnProperty(key)){
-     chatList.push({ ...responseData[key]});
-    }
+    const currentUser = this.authService.getCurrentUser();
+    if(currentUser){
+      if(responseData.hasOwnProperty(key)){
+        const chat: Chat = responseData[key];
+        if(chat.participants && chat.participants[currentUser.uid]){
+        chatList.push({ ...responseData[key]});
+        }
+      }
+      }
     }
     return chatList;
    })
    );
  }
+
+getChatData(chat: Chat): Observable<ChatData | null> {
+  const currentUser = this.authService.getCurrentUser();
+  if (currentUser?.uid) {
+    const participantUid = Object.keys(chat.participants).find((uid) => uid !== currentUser.uid);
+    if (!participantUid) {
+      return of(null);
+    }
+    return this.getUserNameFromUid(participantUid).pipe(
+      switchMap((senderName: string | null) => {
+        if (senderName === null) {
+          return of(null); // Wenn kein Name gefunden wurde, gib null zurück
+        }
+        const chatData: ChatData = {
+          content: chat.lastMessage.content,
+          sender: chat.lastMessage.sender,
+          timeStamp: chat.lastMessage.timeStamp,
+          participant: participantUid,
+          name: senderName 
+        };
+        return of(chatData);
+      }),
+      catchError(error => {
+        console.error('Fehler beim fetchen vom Namen', error);
+        return of(null);
+      })
+    );
+  }
+  return of(null);
+}
+
+private getUserNameFromUid(uid: string): Observable<string | null> {
+  return this.http.get<{ [key: string]: UserData }>('https://whatsapp-project-90961-default-rtdb.firebaseio.com/users.json').pipe(
+    map(responseData => {
+      for (const key in responseData) {
+        if (responseData.hasOwnProperty(key)) {
+          const user = responseData[key];
+          if (user.uid === uid) {
+            return user.name;
+          }
+        }
+      }
+      return null;
+    }),
+    catchError(error => {
+      console.error('Fehler beim fetchen vom Namen', error);
+      return of(null);
+    })
+  );
+}
+
 
 }
 

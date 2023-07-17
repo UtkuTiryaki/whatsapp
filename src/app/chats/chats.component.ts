@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ChatsService } from './chats.service';
 import { Chat } from '../chat.model';
 import { Subscription } from 'rxjs';
+import { ChatData } from '../chatdata.model';
 
 
 @Component({
@@ -9,21 +10,46 @@ import { Subscription } from 'rxjs';
   templateUrl: './chats.component.html',
   styleUrls: ['./chats.component.css']
 })
+
 export class ChatsComponent implements OnInit, OnDestroy{
 
   chatList: Chat[] = [];
   private chatListSubscription: Subscription = new Subscription();
+  chatData: ChatData;
+  chatDataList : ChatData[] = [];
 
-  constructor(private chatsService: ChatsService){}
-
-
-
-  ngOnInit(): void {
-    this.fetchChat();
-    this.chatListSubscription = this.chatsService.newChatEvent.subscribe(()=>{
-    this.fetchChat();
-  })
+  constructor(private chatsService: ChatsService){
   }
+
+
+
+ngOnInit(): void {
+  this.chatListSubscription.add(
+    this.chatsService.newChatEvent.subscribe(() => {
+      this.chatsService.fetchChat();
+    })
+  );
+  this.chatsService.fetchChat();
+
+  this.chatListSubscription.add(
+    this.chatsService.fetchChat().subscribe((chats) => {
+      this.chatList = chats;
+      this.chatDataList = [];
+
+      for (const chat of this.chatList) {
+        this.chatsService.getChatData(chat).subscribe((chatData) => {
+          if (chatData) {
+            this.chatDataList.push(chatData);
+          }
+        });
+      }
+
+      console.log(this.chatDataList);
+    })
+  );
+}
+
+
 
   ngOnDestroy(){
     this.chatListSubscription.unsubscribe();
@@ -37,10 +63,6 @@ export class ChatsComponent implements OnInit, OnDestroy{
     }, error => {
       console.error('Fehler beim Abrufen der Chatliste:', error);
     })
-  }
-
-  getParticipantUids(chat: Chat):string[] {
-    return Object.keys(chat.participants);
   }
 
 }

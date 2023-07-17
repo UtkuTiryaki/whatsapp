@@ -104,7 +104,7 @@ signUp(email: string, password: string, name: string) : Observable<AuthResponseD
   if(userDataString){
     userData = JSON.parse(userDataString);
   } else{
-    return;
+    return null;
   }
   const loadedUser : UserData = {
     uid: userData.id,
