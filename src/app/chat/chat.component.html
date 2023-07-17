@@ -1,19 +1,22 @@
 <div class="container">
- <div class="heading-section">
-  <p>Hier steht der Name</p>
- </div>
- <div class="chat-section">
-  <div *ngFor="let messageItem of chat">
-    <div class="message sender">
-    <!-- {{messageItem.message}}-->
-    <!-- <div class="metadata">{{messageItem.timestamp}}</div>-->
+  <div class="heading-section">
+    <p>Hier steht der Name</p>
+  </div>
+  <div class="chat-section">
+    <div *ngFor="let chatData of chatDataList" class="chat" (click)="loadChatMessages(chatData.chatId)">
+      <div class="chat-participants">
+        <div class="participant-uid">
+          {{ chatData.name }}
+        </div>
+      </div>
+      <div class="last-message">
+        <div class="content">{{ chatData.content }}</div>
+        <div class="timestamp">{{ chatData.timeStamp }}</div>
+      </div>
     </div>
   </div>
- </div>
- <div class="input-section">
-  <input type="text" class="custom-input" placeholder="Schreib eine Narchicht" [(ngModel)]="message">
-  <button class="input-button" 
-          *ngIf="message !== '' " 
-          >Senden</button>
- </div>
+  <div class="input-section">
+    <input type="text" class="custom-input" placeholder="Schreib eine Nachricht" [(ngModel)]="message">
+    <button class="input-button" *ngIf="message !== ''" (click)="sendMessage()">Senden</button>
+  </div>
 </div>

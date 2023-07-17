@@ -51,6 +51,7 @@ export class ChatsService{
 
  createChat(user: UserData, recipient: UserData){
   const chatData: Chat = {
+   chatId: '',
    participants: {
     [user.uid]: true,
     [recipient.uid]: true
@@ -63,32 +64,35 @@ export class ChatsService{
   };
   this.http.post<{ name: string }>('https://whatsapp-project-90961-default-rtdb.firebaseio.com/chats.json', chatData).subscribe(responseData=>{
    console.log('Chat wurde erstellt:' ,responseData.name);
+   chatData.chatId= responseData.name;
    this.newChatSubject.next();
   }, error => {
    console.error('Fehler beim Erstellen:', error);
   })
  }
 
- fetchChat(): Observable<Chat[]>{
-      return this.http.get<{[key:string]: Chat}>('https://whatsapp-project-90961-default-rtdb.firebaseio.com/chats.json').pipe(
-    map(responseData =>{
-   const chatList: Chat []= [];
-   for(const key in responseData){
-    const currentUser = this.authService.getCurrentUser();
-    if(currentUser){
-      if(responseData.hasOwnProperty(key)){
-        const chat: Chat = responseData[key];
-        if(chat.participants && chat.participants[currentUser.uid]){
-        chatList.push({ ...responseData[key]});
+  fetchChat(): Observable<Chat[]> {
+    return this.http.get<{ [key: string]: Chat }>('https://whatsapp-project-90961-default-rtdb.firebaseio.com/chats.json').pipe(
+      map(responseData => {
+        const chatList: Chat[] = [];
+        for (const key in responseData) {
+          if (responseData.hasOwnProperty(key)) {
+            const chat: Chat = {
+              chatId: key, // Setze den chatId
+              participants: responseData[key].participants,
+              lastMessage: {
+                sender: responseData[key].lastMessage.sender,
+                content: responseData[key].lastMessage.content,
+                timeStamp: new Date(responseData[key].lastMessage.timeStamp)
+              }
+            };
+            chatList.push(chat);
+          }
         }
-      }
-      }
-    }
-    return chatList;
-   })
-   );
- }
-
+        return chatList;
+      })
+    );
+  }
 getChatData(chat: Chat): Observable<ChatData | null> {
   const currentUser = this.authService.getCurrentUser();
   if (currentUser?.uid) {
@@ -106,7 +110,8 @@ getChatData(chat: Chat): Observable<ChatData | null> {
           sender: chat.lastMessage.sender,
           timeStamp: chat.lastMessage.timeStamp,
           participant: participantUid,
-          name: senderName 
+          name: senderName,
+          chatId: chat.chatId
         };
         return of(chatData);
       }),

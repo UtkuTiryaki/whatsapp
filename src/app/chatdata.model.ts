@@ -4,4 +4,5 @@ export interface ChatData{
   timeStamp: Date; 
   participant: string | undefined;
   name: string;
+  chatId: string;
 }

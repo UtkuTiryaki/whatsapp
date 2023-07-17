@@ -5,4 +5,5 @@ export interface Chat{
   content: string,
   timeStamp: Date
  }
+ chatId: string
 }
