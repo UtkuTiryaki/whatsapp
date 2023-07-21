@@ -1,10 +1,11 @@
-import { Component , OnInit, OnDestroy} from '@angular/core';
+import { Component , OnInit, OnDestroy, Input} from '@angular/core';
 import { ChatService } from './chat.service';
 import { Message } from '../message.model';
 import { Subscription, map } from 'rxjs';
 import { Chat } from '../chat.model';
 import { ChatData } from '../chatdata.model';
 import { ChatsService } from '../chats/chats.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-chat',
@@ -13,21 +14,30 @@ import { ChatsService } from '../chats/chats.service';
 })
 export class ChatComponent implements OnInit, OnDestroy{
   
-  message : string = "";
+  message : string = '';
   chat: Chat[] = [];
-  chatListSubscription: Subscription = new Subscription;
+  chatListSubscription: Subscription = new Subscription();
   chatDataList: ChatData[] = []; // Hinzugefügt
+  chatMessages: Message[] = [];
+  selectedChatId: string | null = null;
 
-  constructor( private chatService: ChatService, private chatsService: ChatsService){}
+  constructor( private chatService: ChatService, private chatsService: ChatsService, private route: ActivatedRoute, private router: Router){}
 
  
   ngOnInit() {
+    this.route.params.subscribe((params) => {
+      const chatId = params['chatId'];
+      if(chatId){
+        this.loadChatMessages(chatId);
+        this.selectedChatId = chatId;
+      }   
+     });
     this.chatListSubscription.add(
       this.chatService.newMessageEvent.subscribe(() => {
-        this.fetchMessage();
+        this.loadChatMessages(this.selectedChatId);
       })
     );
-    this.fetchMessage();
+    this.loadChatMessages(this.selectedChatId);
   }
 
   ngOnDestroy() {
@@ -35,26 +45,15 @@ export class ChatComponent implements OnInit, OnDestroy{
   }
 
   sendMessage() {
-    this.chatService.sendingMessage(this.message);
+  if (!this.selectedChatId) {
+      console.error('No chat selected.');
+      return;
+    }
+
+    this.chatService.sendingMessage(this.message, this.selectedChatId);
     this.message = '';
   }
 
-  fetchMessage() {
-    this.chatService.fetchChat().subscribe(chats => {
-      this.chat = chats;
-      this.chatDataList = [];
-
-      for (const chat of this.chat) {
-        this.chatsService.getChatData(chat).subscribe(chatData => {
-          if (chatData) {
-            this.chatDataList.push(chatData);
-          }
-        });
-      }
-
-      console.log(this.chatDataList);
-    });
-  }
 
   formatTimestamp(timestamp: string): string {
     const date = new Date(timestamp);
@@ -67,10 +66,12 @@ export class ChatComponent implements OnInit, OnDestroy{
     return `${day}/${month}/${year}, ${hour}:${minute}`;
   }
 
-    loadChatMessages(chatId: string) {
-    // Hier implementieren wir die Logik, um die Chat-Nachrichten für den angegebenen chatId abzurufen
-    // und die Nachrichten im Chat anzuzeigen.
+  loadChatMessages(chatId: string) {
+    this.chatService.fetchChatMessages(chatId).subscribe((messages) => {
+      this.chatMessages = messages;
+    });
   }
+
 
 }
   

@@ -1,8 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { ChatsService } from './chats.service';
 import { Chat } from '../chat.model';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription, tap } from 'rxjs';
 import { ChatData } from '../chatdata.model';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -17,52 +18,49 @@ export class ChatsComponent implements OnInit, OnDestroy{
   private chatListSubscription: Subscription = new Subscription();
   chatData: ChatData;
   chatDataList : ChatData[] = [];
+  selectedChatId: string | null = null;
 
-  constructor(private chatsService: ChatsService){
+  constructor(private chatsService: ChatsService, private router: Router){
   }
 
 
 
-ngOnInit(): void {
-  this.chatListSubscription.add(
-    this.chatsService.newChatEvent.subscribe(() => {
-      this.chatsService.fetchChat();
-    })
-  );
-  this.chatsService.fetchChat();
-
-  this.chatListSubscription.add(
-    this.chatsService.fetchChat().subscribe((chats) => {
-      this.chatList = chats;
-      this.chatDataList = [];
-
-      for (const chat of this.chatList) {
-        this.chatsService.getChatData(chat).subscribe((chatData) => {
-          if (chatData) {
-            this.chatDataList.push(chatData);
-          }
-        });
-      }
-
-      console.log(this.chatDataList);
-    })
-  );
-}
-
-
-
+  ngOnInit(): void {
+    this.fetchChatList();
+    this.chatListSubscription.add(
+      this.chatsService.newChatEvent.pipe(
+        tap((newChat) => {
+          this.chatList.push(newChat);
+          this.fetchChatList();
+        })
+      ).subscribe()
+    );
+  } 
+  
   ngOnDestroy(){
     this.chatListSubscription.unsubscribe();
   }
 
 
-  fetchChat(){
-    this.chatsService.fetchChat().subscribe(chats => {
-      this.chatList = chats;
-      console.log('Chatliste:', this.chatList);
-    }, error => {
-      console.error('Fehler beim Abrufen der Chatliste:', error);
-    })
+  emitChatId(chatId: string){
+    this.chatsService.emitChatEvent(chatId);
+    console.log(chatId);
+  }
+
+  private fetchChatList(){
+    this.chatListSubscription.add(
+      this.chatsService.fetchChat().subscribe((chats) => {
+        this.chatList = chats;
+        this.chatDataList = [];
+        for(const chat of this.chatList){
+          this.chatsService.getChatData(chat).subscribe((chatData) => {
+            if(chatData){
+              this.chatDataList.push(chatData);
+            }
+          });
+        }
+      })
+    );
   }
 
 }

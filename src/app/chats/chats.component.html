@@ -1,12 +1,12 @@
 <div class="chat-list">
- <div *ngFor="let chatData of chatDataList" class="chat">
+ <div *ngFor="let chatData of chatDataList" class="chat" (click)="emitChatId(chatData.chatId)">
   <div class="chat-participants">
    <div class="participant-uid">
     {{ chatData.name }}
     </div>
    </div>
    <div class="last-message">
-    <div class="content">{{ chatData.content }}</div>
+    <div class="content">{{ chatData.content }} von {{ chatData.sender }}</div>
     <div class="timestamp">{{ chatData.timeStamp }}</div>
   </div>
  </div>

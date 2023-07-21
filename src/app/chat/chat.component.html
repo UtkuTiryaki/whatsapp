@@ -3,20 +3,21 @@
     <p>Hier steht der Name</p>
   </div>
   <div class="chat-section">
-    <div *ngFor="let chatData of chatDataList" class="chat" (click)="loadChatMessages(chatData.chatId)">
-      <div class="chat-participants">
-        <div class="participant-uid">
-          {{ chatData.name }}
-        </div>
-      </div>
-      <div class="last-message">
-        <div class="content">{{ chatData.content }}</div>
-        <div class="timestamp">{{ chatData.timeStamp }}</div>
+    <!-- Display chat messages only when a chat is selected -->
+    <div class="chat-messages">
+      <div *ngFor="let message of chatMessages" class="message">
+        <div class="sender">{{ message.sender }}</div>
+        <div class="content">{{ message.content }}</div>
+        <div class="timestamp">{{ formatTimestamp(message.timestamp) }}</div>
       </div>
     </div>
   </div>
   <div class="input-section">
-    <input type="text" class="custom-input" placeholder="Schreib eine Nachricht" [(ngModel)]="message">
-    <button class="input-button" *ngIf="message !== ''" (click)="sendMessage()">Senden</button>
+    <!-- Show input field and send button when a chat is selected -->
+    <input type="text" class="custom-input" placeholder="Schreib eine Nachricht"
+      [(ngModel)]="message" />
+    <button *ngIf="message !== ''" class="input-button" (click)="sendMessage()">
+      Senden
+    </button>
   </div>
 </div>
