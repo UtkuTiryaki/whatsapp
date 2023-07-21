@@ -54,7 +54,15 @@ export class ChatService {
       })
     );
   }
-  
+
+  getSenderFromLocalStorage(): string | null {
+    const currentUser = this.authService.getCurrentUser();
+    if(currentUser){
+      return currentUser.uid;
+    }
+    return null;
+  } 
+
  }
 
 

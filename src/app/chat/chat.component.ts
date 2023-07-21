@@ -72,6 +72,10 @@ export class ChatComponent implements OnInit, OnDestroy{
     });
   }
 
+    isCurrentUser(senderId: string): boolean {
+    const currentUserUid = this.chatService.getSenderFromLocalStorage();
+    return senderId === currentUserUid;
+  }
 
 }
   
