@@ -137,7 +137,7 @@ export class ChatsService{
   }
 
 
-  private getUserNameFromUid(uid: string): Observable<string | null> {
+  getUserNameFromUid(uid: string): Observable<string> {
     return this.http.get<{ [key: string]: UserData }>('https://whatsapp-project-90961-default-rtdb.firebaseio.com/users.json').pipe(
       map(responseData => {
         for (const key in responseData) {
@@ -148,11 +148,11 @@ export class ChatsService{
             }
           }
         }
-        return null;
+        return 'Unknown';
       }),
       catchError(error => {
         console.error('Fehler beim fetchen vom Namen', error);
-        return of(null);
+        return of('Unknown');
       })
     );
   }

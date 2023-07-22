@@ -1,9 +1,12 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Message } from "../message.model";
-import { Observable, Subject, catchError, exhaustMap, map , of, take} from "rxjs";
+import { Observable, Subject, catchError, exhaustMap, map , of, switchMap, take} from "rxjs";
 import { AuthService } from "../auth/auth.service";
 import { Chat } from "../chat.model";
+import { User } from "../user.model";
+import { UserData } from "../userdata.model";
+import { ChatsService } from "../chats/chats.service";
 
 @Injectable({providedIn: 'root'})
 
@@ -12,7 +15,7 @@ export class ChatService {
  private newMessageSubject = new Subject<void>();
  public newMessageEvent = this.newMessageSubject.asObservable();
 
- constructor(private http: HttpClient, private authService: AuthService){}
+ constructor(private http: HttpClient, private authService: AuthService, private chatsService: ChatsService){}
 
  sendingMessage(message: string, chatId: string){
   const timestamp = new Date().toISOString();
@@ -21,14 +24,27 @@ export class ChatService {
     console.error('Sender UID not availiable');
     return;
   }
-
-  const messageData: Message = { sender, content: message, timestamp: timestamp, chatId: chatId}
-  this.http.post<{ name: string }>('https://whatsapp-project-90961-default-rtdb.firebaseio.com/messages.json', messageData).subscribe(responseData => {
-   console.log(responseData);
-   this.newMessageSubject.next();
-  },error => {
-   console.log(error)
-  });
+  const senderName$ = this.chatsService.getUserNameFromUid(sender);
+  senderName$.pipe(
+    switchMap(senderName => {
+      const messageData: Message = {
+        sender,
+        content: message,
+        timestamp: timestamp,
+        chatId: chatId,
+        senderName: senderName 
+      };
+      return this.http.post<{ name: string }>('https://whatsapp-project-90961-default-rtdb.firebaseio.com/messages.json', messageData);
+    })
+  ).subscribe(
+    responseData => {
+      console.log(responseData);
+      this.newMessageSubject.next();
+    },
+    error => {
+      console.error(error);
+    }
+  );
  }
 
 
@@ -62,6 +78,7 @@ export class ChatService {
     }
     return null;
   } 
+
 
  }
 

@@ -1,6 +1,6 @@
 <div class="container">
   <div class="heading-section">
-    <p>Hier steht der Name</p>
+    <p>{{ chatMessages[0]?.senderName || 'Unknown' }}</p>
   </div>
   <div class="chat-section">
     <!-- Display chat messages only when a chat is selected -->
@@ -9,7 +9,7 @@
         [ngClass]="{'message-right' : isCurrentUser(message.sender), 'message-left': !isCurrentUser(message.sender)}">
         <div class="message" [ngClass]="{'sender': isCurrentUser(message.sender)}">
           <div class="content">{{ message.content }}</div>
-          <div class="metadata">{{ message.sender }} - {{ formatTimestamp(message.timestamp) }}</div>
+          <div class="metadata">{{ message.senderName }} - {{ formatTimestamp(message.timestamp) }}</div>
         </div>
       </div>
     </div>

@@ -1,11 +1,12 @@
 import { Component , OnInit, OnDestroy, Input} from '@angular/core';
 import { ChatService } from './chat.service';
 import { Message } from '../message.model';
-import { Subscription, map } from 'rxjs';
+import { Observable, Subscription, map, of, catchError } from 'rxjs';
 import { Chat } from '../chat.model';
 import { ChatData } from '../chatdata.model';
 import { ChatsService } from '../chats/chats.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { splitNsName } from '@angular/compiler';
 
 @Component({
   selector: 'app-chat',
@@ -49,7 +50,6 @@ export class ChatComponent implements OnInit, OnDestroy{
       console.error('No chat selected.');
       return;
     }
-
     this.chatService.sendingMessage(this.message, this.selectedChatId);
     this.message = '';
   }
@@ -72,11 +72,26 @@ export class ChatComponent implements OnInit, OnDestroy{
     });
   }
 
-    isCurrentUser(senderId: string): boolean {
+  isCurrentUser(senderId: string): boolean {
     const currentUserUid = this.chatService.getSenderFromLocalStorage();
     return senderId === currentUserUid;
   }
 
+  async getChatPartnerName(senderId: string): Promise<string> {
+    if (this.isCurrentUser(senderId)) {
+      // If the sender is the current user, return 'You'.
+      return 'You';
+    } else {
+      // If the sender is not the current user, fetch the chat partner's name.
+      try {
+        const name = await this.chatsService.getUserNameFromUid(senderId).toPromise();
+        return name || 'Non-Logged-In User';
+      } catch (error) {
+        console.error('Error fetching sender name:', error);
+        return 'Unknown';
+      }
+    }
+  }
 }
   
   

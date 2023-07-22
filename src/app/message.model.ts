@@ -3,4 +3,5 @@ export interface Message {
  content: string;
  timestamp: string;
  chatId: string;
+ senderName?: string;
 }
