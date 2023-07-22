@@ -5,7 +5,7 @@ import { UserData } from "../userdata.model";
 import { Chat } from "../chat.model";
 import { AuthService } from "../auth/auth.service";
 import { ChatData } from '../chatdata.model';
-import { Message } from "../message.model";
+
 
 
 
@@ -16,7 +16,7 @@ export class ChatsService{
  private newChatSubject = new Subject<Chat>();
  public newChatEvent = this.newChatSubject.asObservable();
 
- private chatEventSubject: Subject<string> = new Subject<string>();
+ private chatEventSubject: Subject<any> = new Subject<any>();
  chatEvent$ = this.chatEventSubject.asObservable();
 
  constructor(private http: HttpClient, private authService: AuthService){}

@@ -7,6 +7,7 @@ import { Chat } from "../chat.model";
 import { User } from "../user.model";
 import { UserData } from "../userdata.model";
 import { ChatsService } from "../chats/chats.service";
+import { ChatData } from "../chatdata.model";
 
 @Injectable({providedIn: 'root'})
 
@@ -78,6 +79,70 @@ export class ChatService {
     }
     return null;
   } 
+
+  getChatData(chatId: string): Observable<ChatData | null> {
+    const currentUser = this.authService.getCurrentUser();
+    if (currentUser?.uid) {
+      return this.getChatById(chatId).pipe(
+        switchMap((chat: Chat | null) => {
+          if(!chat){
+            return of(null);
+          }
+      const participantUid = Object.keys(chat.participants).find((uid) => uid !== currentUser.uid);
+      if (!participantUid) {
+        return of(null);
+      }
+
+      return this.chatsService.getUserNameFromUid(participantUid).pipe(
+        switchMap((senderName: string | null) => {
+          if (senderName === null) {
+            return of(null);
+          }
+          const chatData: ChatData = {
+            content: chat.lastMessage.content,
+            sender: chat.lastMessage.sender,
+            timeStamp: chat.lastMessage.timeStamp,
+            participant: participantUid,
+            name: senderName,
+            chatId: chat.chatId
+          };
+          return of(chatData);
+        }),
+        catchError(error => {
+          console.error('Fehler beim fetchen vom Namen', error);
+          return of(null);
+        })
+      );
+    }), catchError(error => {
+      console.error('Error fetching chat by ID:', error);
+      return of(null);
+    })
+    );
+  }
+  return of(null);
+  }
+
+  private getChatById(chatId: string): Observable<Chat | null> {
+    return this.http.get<{ [key: string]: Chat }>('https://whatsapp-project-90961-default-rtdb.firebaseio.com/chats.json').pipe(
+      map(responseData => {
+        for (const key in responseData) {
+          if (responseData.hasOwnProperty(key)) {
+            const chat = responseData[key];
+            console.log(chat)
+            if (key === chatId) {
+              return chat;
+            }
+          }
+        }
+        return null;
+      }),
+      catchError(error => {
+        console.error('Error fetching chat by ID:', error);
+        return of(null);
+      })
+    );
+  }
+
 
 
  }

@@ -1,6 +1,6 @@
 <div class="container">
   <div class="heading-section">
-    <p>{{ chatMessages[0]?.senderName || 'Unknown' }}</p>
+    <p>{{ (chatData$ | async)?.name }}</p>
   </div>
   <div class="chat-section">
     <!-- Display chat messages only when a chat is selected -->

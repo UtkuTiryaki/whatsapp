@@ -1,12 +1,13 @@
 import { Component , OnInit, OnDestroy, Input} from '@angular/core';
 import { ChatService } from './chat.service';
 import { Message } from '../message.model';
-import { Observable, Subscription, map, of, catchError } from 'rxjs';
+import { Observable, Subscription, map, of, catchError, switchMap } from 'rxjs';
 import { Chat } from '../chat.model';
 import { ChatData } from '../chatdata.model';
 import { ChatsService } from '../chats/chats.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { splitNsName } from '@angular/compiler';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-chat',
@@ -16,29 +17,33 @@ import { splitNsName } from '@angular/compiler';
 export class ChatComponent implements OnInit, OnDestroy{
   
   message : string = '';
-  chat: Chat[] = [];
   chatListSubscription: Subscription = new Subscription();
-  chatDataList: ChatData[] = []; // Hinzugefügt
   chatMessages: Message[] = [];
   selectedChatId: string | null = null;
+  chatData$: Observable<ChatData | null>;
 
-  constructor( private chatService: ChatService, private chatsService: ChatsService, private route: ActivatedRoute, private router: Router){}
+  constructor( private chatService: ChatService, private chatsService: ChatsService, private route: ActivatedRoute, private router: Router, private authService: AuthService){}
 
  
   ngOnInit() {
     this.route.params.subscribe((params) => {
       const chatId = params['chatId'];
       if(chatId){
+        this.chatData$ = this.chatService.getChatData(chatId);
         this.loadChatMessages(chatId);
         this.selectedChatId = chatId;
-      }   
-     });
+      }
+    });
     this.chatListSubscription.add(
       this.chatService.newMessageEvent.subscribe(() => {
-        this.loadChatMessages(this.selectedChatId);
+        if(this.selectedChatId){
+          this.loadChatMessages(this.selectedChatId);
+        }
       })
     );
-    this.loadChatMessages(this.selectedChatId);
+    if(this.selectedChatId){
+      this.loadChatMessages(this.selectedChatId);
+    }
   }
 
   ngOnDestroy() {
@@ -77,21 +82,6 @@ export class ChatComponent implements OnInit, OnDestroy{
     return senderId === currentUserUid;
   }
 
-  async getChatPartnerName(senderId: string): Promise<string> {
-    if (this.isCurrentUser(senderId)) {
-      // If the sender is the current user, return 'You'.
-      return 'You';
-    } else {
-      // If the sender is not the current user, fetch the chat partner's name.
-      try {
-        const name = await this.chatsService.getUserNameFromUid(senderId).toPromise();
-        return name || 'Non-Logged-In User';
-      } catch (error) {
-        console.error('Error fetching sender name:', error);
-        return 'Unknown';
-      }
-    }
-  }
 }
   
   
