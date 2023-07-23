@@ -3,7 +3,7 @@ export interface Chat{
  lastMessage: {
   sender: string // uid of the sender
   content: string,
-  timeStamp: Date
+  timeStamp: string
  }
  chatId: string
 }

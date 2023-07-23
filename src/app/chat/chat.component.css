@@ -70,6 +70,7 @@
 /* Zeige die Scrollbar nur beim Scrollen */
 .chat-section:hover::-webkit-scrollbar {
  width: 6px;
+ overflow-y: auto;
 }
 
 .chat-messages {
@@ -112,8 +113,8 @@
 .input-button {
  padding: 10px;
  margin-left: 10px;
- background-color: dodgerblue;
- color: white;
+ background-color: #f0f0f0;
+ color: black;
  border: none;
  border-radius: 5px;
  cursor: pointer;

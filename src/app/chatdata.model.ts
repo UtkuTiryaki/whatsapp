@@ -1,7 +1,7 @@
 export interface ChatData{
   content: string; 
   sender: string; 
-  timeStamp: Date; 
+  timeStamp: string; 
   participant: string | undefined;
   name: string;
   chatId: string;

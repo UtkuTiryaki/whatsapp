@@ -5,6 +5,8 @@ import { UserData } from "../userdata.model";
 import { Chat } from "../chat.model";
 import { AuthService } from "../auth/auth.service";
 import { ChatData } from '../chatdata.model';
+import { Message } from "../message.model";
+import { ChatService } from "../chat/chat.service";
 
 
 
@@ -62,7 +64,7 @@ export class ChatsService{
    lastMessage: {
     sender: user.uid,
     content: '',
-    timeStamp: new Date()
+    timeStamp: ''
    }
   };
   this.http.post<{ name: string }>('https://whatsapp-project-90961-default-rtdb.firebaseio.com/chats.json', chatData).subscribe(responseData=>{
@@ -87,7 +89,7 @@ export class ChatsService{
               lastMessage: {
                 sender: responseData[key].lastMessage.sender,
                 content: responseData[key].lastMessage.content,
-                timeStamp: new Date(responseData[key].lastMessage.timeStamp)
+                timeStamp: responseData[key].lastMessage.timeStamp
               }
             };
             if(currentUserUid && chat.participants[currentUserUid]){
@@ -156,6 +158,44 @@ export class ChatsService{
       })
     );
   }
+
+  getLatestMessage(chatId: string) : Observable<Message | null>{
+    return this.fetchChatMessages(chatId).pipe(
+      map((messages: Message[]) => {
+        if (messages.length === 0){
+          return null;
+        }
+        const sortedMessages = messages.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+        console.log(sortedMessages);
+        return sortedMessages[0];
+      })
+    );
+  }
+
+   private fetchChatMessages(chatId: string): Observable<Message[]> {
+    return this.http
+      .get<{ [key: string]: Message }>('https://whatsapp-project-90961-default-rtdb.firebaseio.com/messages.json')
+      .pipe(
+        map((responseData) => {
+          const messages: Message[] = [];
+          for (const key in responseData) {
+            if (responseData.hasOwnProperty(key)) {
+              const message: Message = responseData[key];
+              if (message.chatId === chatId) {
+                messages.push(message);
+              }
+            }
+          }
+          return messages;
+        }),
+        catchError((error) => {
+          console.error('Error fetching messages:', error);
+          return of([]);
+        })
+      );
+  }
+
+  
 
 }
 

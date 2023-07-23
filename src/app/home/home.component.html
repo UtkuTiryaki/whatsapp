@@ -1,9 +1,8 @@
 <div class="container">
  <div class="chats">
    <div class="user-bar">
-      <p>Profilbild</p>
       <p>Name</p>
-      <button (click)="openFormModal()" class="btn btn-primary">Neuer Kontakt</button>
+      <button (click)="openFormModal()" class="btn">Neuer Kontakt</button>
       <div class="modal" [class.show]="isFormModalOpen">
          <div class="modal-dialog">
             <div class="modal-content">
@@ -21,8 +20,8 @@
                   </form>
                </div>
                <div class="modal-footer">
-                  <button type="button" class="btn btn-primary" (click)="newContact()">Speichern</button>
-                  <button type="button" class="btn btn-secondary" (click)="closeFormModal()">Abbrechen</button>
+                  <button type="button" class="btn" (click)="newContact()">Speichern</button>
+                  <button type="button" class="btn" (click)="closeFormModal()">Abbrechen</button>
                </div>
             </div>
          </div>
@@ -30,7 +29,7 @@
   </div>
   <app-chats></app-chats>
    <div class="logout">
-      <button class="logout-btn" (click)="logout()">Abmelden</button>
+      <button class="btn" (click)="logout()">Abmelden</button>
    </div>
  </div>
  <div class="chat">

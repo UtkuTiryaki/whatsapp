@@ -128,7 +128,6 @@ export class ChatService {
         for (const key in responseData) {
           if (responseData.hasOwnProperty(key)) {
             const chat = responseData[key];
-            console.log(chat)
             if (key === chatId) {
               return chat;
             }

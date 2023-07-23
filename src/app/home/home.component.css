@@ -1,16 +1,16 @@
 .container {
  display: flex;
- justify-content: space-between;
  align-items: flex-start;
  margin-top: 30px;
  overflow: hidden;
- margin-bottom: 20px;
+ background: linear-gradient(to bottom, #ffffff, #f0f8ff);
+ margin: 0 auto;
  height: 100vh;
- background-color: #f0f0f0;
+ border-radius: 10px;
+ box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .chats {
- width: 50%;
  flex: 1;
  padding: 10px;
  background-color: #fff;
@@ -29,24 +29,32 @@
 .logout {
  display: flex;
  align-items: center;
+ justify-content: flex-end;
+    /* Buttons rechts ausrichten */
+  margin-top: 10px;
+    /* Abstand zum User-Bereich */
 }
 
 .user-bar {
  display: flex;
+ justify-content: space-between;
  align-items: center;
- margin-right: 10px;
+ background-color: #075e54;
+ color: #fff;
+ padding: 10px;
+ border-radius: 5px 5px 0 0;
 }
 
 .user-bar p {
- margin-right: 10px;
+ margin-right: 0;
 }
 
-.logout-btn {
+.btn {
  padding: 8px 16px;
  border-radius: 4px;
  cursor: pointer;
- background-color: #007bff;
- color: #fff;
+ background-color: #f0f0f0;
+ color: black;
  border: none;
 }
 
@@ -78,7 +86,7 @@
 
 /* WhatsApp-Styling für den Modal-Header */
 .modal-header {
- background-color: #007bff;
+ background-color: #075e54;
  color: #fff;
  padding: 10px;
  border-radius: 5px 5px 0 0;
@@ -90,7 +98,7 @@
 
 /* WhatsApp-Styling für die Modal-Buttons */
 .modal-footer {
- background-color: #f0f0f0;
+ background-color: white;
  padding: 10px;
  border-radius: 0 0 5px 5px;
 }
